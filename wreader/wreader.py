@@ -2,22 +2,34 @@ import pandas as pd
 import requests
 
 
-sleep_time = 10
+class WReader():
+    def __init__(api_key, sleep_time = 10):
+        self.api_key = api_key
+        self.sleep_time = sleep_time
 
 
-class wreader():
-    def __init__():
-        self.api_key = ["cbf943314d37c8cc", "58244b4a3179a0cd"]
+    def set_api_key(api_key):
+        """Set  wunderground api_key
 
-    def get_api_key():
+        args:
+            param1: (str) api_key
+        
+        """
+        self.api_key = api_key
 
-        return self.api_key[0]
 
+    def get_location_json(location):
+        
+        """Get 24h weather data from location
 
-    def get_location_json(api_key, location):
-        '''
-        Get 24h weather data from location
-        '''
+        Args:
+            param1: (str) location as XXXX,YYYY
+
+        Returns:
+            Json
+
+        """
+        
 
         url = "http://api.wunderground.com/api/%s/hourly/q/%s.json" % (api_key, location)
 
@@ -25,10 +37,16 @@ class wreader():
 
         return response.json()
 
-    def transform_location_json_to_dataframe(location_data):
-        ''' 
-        Return a list containing hour for hour data for selected location
-        ''' 
+    def transform_location_json_to_dataframe(location):
+        """Return a list containing hour for hour data for selected location
+        
+        args:
+            param1: (str) location as XXXX,YYYY
+
+        Returns:
+            Pandas DataFrame with hours as rows and data as columns
+
+        """
         
         #print beach
         beach_name = location.name
