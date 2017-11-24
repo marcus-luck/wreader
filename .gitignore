@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 *.py~
 *.py.un~
+*~
 
 # C extensions
 *.so
@@ -101,3 +102,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# vim
+.swp
