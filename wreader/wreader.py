@@ -98,11 +98,14 @@ class WReader():
             (pandas DataFrame) 24h, Hour by hour weather of all locations
         """
 
+        # Get location data as json
         location_data = self._get_location_json(location)
         
+        # Transform json data to DataFrame
         location_dataframe = transform_location_json_to_dataframe(location_data)        
     
-    
+        return location_dataframe
+
     def get_all_location_data(locations):
         """Returns a datatable of 24h, hour by hour weather of all locations
             Intention is to return a pandas DataFrame of with 24 hour datarows per location.
@@ -115,18 +118,20 @@ class WReader():
             (pandas DataFrame) 24h, Hour by hour weather of all locations
         """
         
-        # define dataframe
+        # Define dataframe
         locations_datatable = pf.DataFrame()
         
         # Go through all locations
         for location in locations:
 
-            # fetch location weather data for the next 24h
+            # Fetch location weather data for the next 24h
             location_json = get_location_json(self.api_key, location.location)
 
+            # Transform location json to DataFrame
             location_datatable = transform_location_json_to_dataframe(
                     location_json)
 
             # Combine locations_dataframes into one dataframe
-            locations = locations.concat(location_datatable, ignoew_index=True)
+            all_locations_datatable = all_locations_datatable.concat(location_datatable, ignoew_index=True)
 
+        return locations_datatable
