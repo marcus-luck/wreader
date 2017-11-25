@@ -2,7 +2,7 @@ import pandas as pd
 from requests import get
 
 
-class wreader():
+class WReader():
     def __init__(self, api_key, sleep_time = 10):
         self._api_key = api_key
         self._sleep_time = sleep_time
@@ -25,7 +25,7 @@ class wreader():
             param1: (str) api_key
         
         """
-        self.api_key = api_key
+        self._api_key = api_key
 
 
     def _get_location_json(self, location):
@@ -141,10 +141,10 @@ class wreader():
                     location_json)
 
             # Combine locations_dataframes into one dataframe
-            all_locations_datatable = all_locations_datatable.concat(location_datatable, ignoew_index=True)
+            all_locations_datatable = all_locations_datatable.concat(location_datatable, ignore_index=True)
             
             # Don't overflow the api
-            sleep(sleep_time)
+            sleep(self._sleep_time)
 
 
         return locations_datatable
