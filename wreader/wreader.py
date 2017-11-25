@@ -94,7 +94,7 @@ class WReader():
         return pd.DataFrame(weather_data)
 
 
-    def get_location_data(location):
+    def get_location_data(self, location):
         """Returns a datatable of 24h, hour by hour weather of one locations
             Intention is to return a pandas DataFrame of with 24 hour for one specific location.
             Columns in DataFrame are the variables from wunderground.
@@ -115,7 +115,7 @@ class WReader():
         return location_dataframe
 
 
-    def get_all_locations_data(locations):
+    def get_all_locations_data(self, locations):
         """Returns a datatable of 24h, hour by hour weather of all locations
             Intention is to return a pandas DataFrame of with 24 hour datarows per location.
             Columns in DataFrame are the variables from wunderground.
