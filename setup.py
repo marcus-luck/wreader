@@ -7,11 +7,11 @@ def readme():
 
 
 setup(name='wreader',
-      version='0.0.1',
+      version='0.2',
       description='Wunderground weather API reader for hourly data',
       long_description=readme(),
       classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.5',
       ],
