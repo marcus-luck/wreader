@@ -11,7 +11,7 @@ setup(name='wreader',
       ],
       keywords='wreader wunderground weather wunderground-api',
       url='https://github.com/marcus-luck/wreader',
-      author='Marcus Luck'
+      author='Marcus Luck',
       author_email='marcus.luck@outlook.com',
       license='MIT',
       packages=['wreader'],
