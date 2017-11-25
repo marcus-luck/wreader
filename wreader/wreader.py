@@ -3,12 +3,22 @@ from requests import get
 
 
 class wreader():
-    def __init__(api_key, sleep_time = 10):
-        self.api_key = api_key
-        self.sleep_time = sleep_time
+    def __init__(self, api_key, sleep_time = 10):
+        self._api_key = api_key
+        self._sleep_time = sleep_time
 
 
-    def set_api_key(api_key):
+    def set_sleep_time(self, sleep_time):
+        """Set sleeptime in between api calls
+
+        args:
+            param1: (int) sleep_time
+        
+        """
+        self._sleep_time = sleep_time
+
+
+    def set_api_key(self, api_key):
         """Set  wunderground api_key
 
         args:
@@ -18,7 +28,7 @@ class wreader():
         self.api_key = api_key
 
 
-    def _get_location_json(location):
+    def _get_location_json(self, location):
         """Get 24h weather data from location
 
         Args:
@@ -37,7 +47,7 @@ class wreader():
         return response.json()
 
 
-    def _transform_location_json_to_dataframe(location_data):
+    def _transform_location_json_to_dataframe(self, location_data):
         """Return a list containing hour for hour data for selected location
         
         args:
