@@ -1,5 +1,7 @@
 import pandas as pd
 from requests import get
+from datetime import datetime
+from time import sleep
 
 
 class WReader():
@@ -58,40 +60,37 @@ class WReader():
 
         """
 
+        # Define dictionary
+        weather_data = pd.DataFrame()
+        
         # Go through location json and add relevant data to DataFrame
-        for whour in beach['hourly_forecast']:
+        ld = location_data['hourly_forecast']
 
-            # Set time of extraction
-            nowtime = datetime.now().isoformat(' ')
+        # Set time of extraction
+        nowtime = datetime.now().isoformat(' ')
 
-            # Create isodate from fcttime
-            fcttime = whour['FCTTIME']
+        weather_data= pd.concat([weather_data, pd.DataFrame({
+        'predicted_rain': [float(whour['qpf']['english']) for whour in ld],
+        'prediction_of_perspiration': [float(whour['pop']) for whour in ld],
+        'temperature': [float(whour['temp']['english']) for whour in ld],
+        'dew_point': [float(whour['dewpoint']['english']) for whour in ld],
+        'mslp': [float(whour['mslp']['english']) for whour in ld],
+        'humidity': [int(whour['humidity']) for whour in ld],
+        'fctcode': [int(whour['fctcode']) for whour in ld],
+        'wind_direction_degrees': [int(whour['wdir']['degrees']) for whour in ld],
+        'wind_direction': [str(whour['wdir']['dir']) for whour in ld],
+        'wind_speed': [float(whour['wspd']['english']) for whour in ld],
+        'uv_index': [int(whour['uvi']) for whour in ld],
+        'icon_url': [str(whour['icon_url']) for whour in ld],
+        'isodate': [str('{}-{}-{} {}:{}:00.00000'.format(whour['FCTTIME']['year'],
+            whour['FCTTIME']['mon_padded'],
+            whour['FCTTIME']['mday_padded'],
+            whour['FCTTIME']['hour_padded'],
+            whour['FCTTIME']['min'])) for whour in ld],
+        'nowtime': nowtime,
+        })], ignore_index=True)
 
-            fdate = (fcttime['year'] + 
-            '-' + fcttime['mon_padded'] +
-            '-' + fcttime['mday_padded'])
-
-            fhour = (fcttime['hour_padded'] + 
-            ':' + fcttime['min'])
-
-            weather_data= {'predicted_rain': float(whour['qpf']['english']),
-            'prediction_of_perspiration': float(whour['pop']),
-            'temperature': float(whour['temp']['english']),
-            'dew_point': float(whour['dewpoint']['english']),
-            'mslp': float(whour['mslp']['english']),
-            'humidity': int(whour['humidity']),
-            'fctcode': (int(whour['fctcode'])),
-            'wind_direction_degrees': int(whour['wdir']['degrees']),
-            'wind_direction': str(whour['wdir']['dir']),
-            'wind_speed': float(whour['wspd']['english']),
-            'uv_index': int(whour['uvi']),
-            'icon_url': str(whour['icon_url']),
-            'isodate': str(fdate + 
-                    ' ' + fhour + 
-                    ':00.00000')
-            }
-
-        return pd.DataFrame(weather_data)
+        return weather_data
 
 
     def get_location_data(self, location):
@@ -111,7 +110,10 @@ class WReader():
         
         # Transform json data to DataFrame
         location_dataframe = self._transform_location_json_to_dataframe(location_json)        
-    
+        
+        # Add location as a column
+        location_dataframe['location'] = location
+
         return location_dataframe
 
 
@@ -128,24 +130,27 @@ class WReader():
         """
                 
         # Define dataframe
-        locations_datatable = pd.DataFrame()
+        all_locations_datatable = pd.DataFrame()
         
         # Go through all locations
         for location in locations:
 
             # Fetch location weather data for the next 24h
-            location_json = get_location_json(self.api_key, location.location)
+            location_json = self._get_location_json(location)
 
             # Transform location json to DataFrame
             location_datatable = self._transform_location_json_to_dataframe(
                     location_json)
+            
+            # Add location to dataframe
+            location_datatable['location'] = location
 
             # Combine locations_dataframes into one dataframe
-            all_locations_datatable = all_locations_datatable.concat(location_datatable, ignore_index=True)
+            all_locations_datatable = pd.concat([all_locations_datatable, location_datatable], ignore_index=True)
             
             # Don't overflow the api
             sleep(self._sleep_time)
 
 
-        return locations_datatable
+        return all_locations_datatable
 
