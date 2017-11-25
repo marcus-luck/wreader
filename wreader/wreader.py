@@ -2,7 +2,7 @@ import pandas as pd
 from requests import get
 
 
-class WReader():
+class wreader():
     def __init__(api_key, sleep_time = 10):
         self.api_key = api_key
         self.sleep_time = sleep_time
