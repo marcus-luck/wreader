@@ -1,5 +1,5 @@
 import pandas as pd
-import requests
+from requests import get
 
 
 class WReader():
@@ -19,7 +19,6 @@ class WReader():
 
 
     def _get_location_json(location):
-        
         """Get 24h weather data from location
 
         Args:
@@ -33,9 +32,10 @@ class WReader():
 
         url = "http://api.wunderground.com/api/%s/hourly/q/%s.json" % (api_key, location)
 
-        response = requests.get(url)
+        response = get(url)
 
         return response.json()
+
 
     def _transform_location_json_to_dataframe(location_data):
         """Return a list containing hour for hour data for selected location
@@ -104,6 +104,7 @@ class WReader():
     
         return location_dataframe
 
+
     def get_all_locations_data(locations):
         """Returns a datatable of 24h, hour by hour weather of all locations
             Intention is to return a pandas DataFrame of with 24 hour datarows per location.
@@ -115,9 +116,9 @@ class WReader():
         returns:
             (pandas DataFrame) 24h, Hour by hour weather of all locations
         """
-        
+                
         # Define dataframe
-        locations_datatable = pf.DataFrame()
+        locations_datatable = pd.DataFrame()
         
         # Go through all locations
         for location in locations:
@@ -131,5 +132,10 @@ class WReader():
 
             # Combine locations_dataframes into one dataframe
             all_locations_datatable = all_locations_datatable.concat(location_datatable, ignoew_index=True)
+            
+            # Don't overflow the api
+            sleep(sleep_time)
+
 
         return locations_datatable
+
