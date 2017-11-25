@@ -40,7 +40,7 @@ class wreader():
         """
         
 
-        url = "http://api.wunderground.com/api/%s/hourly/q/%s.json" % (api_key, location)
+        url = "http://api.wunderground.com/api/%s/hourly/q/%s.json" % (self._api_key, location)
 
         response = get(url)
 
