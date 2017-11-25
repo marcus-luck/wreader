@@ -1,7 +1,13 @@
 from setuptools import setup
 
+
+def readme():
+    with open('README.rst') as f:
+        return f.read()
+
+
 setup(name='wreader',
-      version='0.01',
+      version='0.0.1',
       description='Wunderground weather API reader for hourly data',
       long_description=readme(),
       classifiers=[
