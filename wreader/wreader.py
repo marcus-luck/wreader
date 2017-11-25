@@ -18,7 +18,7 @@ class WReader():
         self.api_key = api_key
 
 
-    def get_location_json(location):
+    def _get_location_json(location):
         
         """Get 24h weather data from location
 
@@ -37,7 +37,7 @@ class WReader():
 
         return response.json()
 
-    def transform_location_json_to_dataframe(location):
+    def transform_location_json_to_dataframe(location_data):
         """Return a list containing hour for hour data for selected location
         
         args:
@@ -85,14 +85,35 @@ class WReader():
 
             app.logger.info("Data gathered, prepare to save")
 
+    
+    def get_location_data(location):
+        """Returns a datatable of 24h, hour by hour weather of one locations
+            Intention is to return a pandas DataFrame of with 24 hour for one specific location.
+            Columns in DataFrame are the variables from wunderground.
 
-    def get_all_location_data():
-        '''
-        Returns a datatable of all locations
-        '''
+        args: 
+            (str) string of location coordinates.
+
+        returns:
+            (pandas DataFrame) 24h, Hour by hour weather of all locations
+        """
+
+        location_data = self._get_location_json(location)
         
-        # Get all location from database
-        locations = get_locations()
+        location_dataframe = transform_location_json_to_dataframe(location_data)        
+    
+    
+    def get_all_location_data(locations):
+        """Returns a datatable of 24h, hour by hour weather of all locations
+            Intention is to return a pandas DataFrame of with 24 hour datarows per location.
+            Columns in DataFrame are the variables from wunderground.
+
+        args: 
+            (list) list of location coordinates.
+
+        returns:
+            (pandas DataFrame) 24h, Hour by hour weather of all locations
+        """
         
         # define dataframe
         locations_datatable = pf.DataFrame()
@@ -100,11 +121,8 @@ class WReader():
         # Go through all locations
         for location in locations:
 
-            # get the api_key
-            api_key = get_api_key()
-
             # fetch location weather data for the next 24h
-            location_json = get_location_json(api_key, location.location)
+            location_json = get_location_json(self.api_key, location.location)
 
             location_datatable = transform_location_json_to_dataframe(
                     location_json)
