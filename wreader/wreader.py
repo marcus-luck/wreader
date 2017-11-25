@@ -37,7 +37,7 @@ class WReader():
 
         return response.json()
 
-    def transform_location_json_to_dataframe(location_data):
+    def _transform_location_json_to_dataframe(location_data):
         """Return a list containing hour for hour data for selected location
         
         args:
@@ -47,45 +47,43 @@ class WReader():
             Pandas DataFrame with hours as rows and data as columns
 
         """
-        
-        #print beach
-        beach_name = location.name
 
-        beach_id = location.location_id
-
-        # Go through hours
+        # Go through location json and add relevant data to DataFrame
         for whour in beach['hourly_forecast']:
 
-            location_id = int(beach_id)
-
+            # Set time of extraction
             nowtime = datetime.now().isoformat(' ')
 
-
-            predicted_rain = float(whour['qpf']['english'])
-            prediction_of_perspiration = float(whour['pop'])
-            temperature = float(whour['temp']['english'])
-            dew_point = float(whour['dewpoint']['english'])
-            mslp = float(whour['mslp']['english'])
-            humidity = int(whour['humidity'])
-
-            fctcode = (int(whour['fctcode']))
-
-            wind_direction_degrees = int(whour['wdir']['degrees'])
-            wind_direction = str(whour['wdir']['dir'])
-            wind_speed = float(whour['wspd']['english'])
-            #uv_index = int(whour['uvi'])
-            icon_url = str(whour['icon_url'])
-
+            # Create isodate from fcttime
             fcttime = whour['FCTTIME']
-            date = fcttime['year'] + '-' + fcttime['mon_padded'] +
-            '-' + fcttime['mday_padded']
-            hour = fcttime['hour_padded'] + ':' + fcttime['min']
-            isodate = date + ' ' + hour + ':00.00000'
-            isodate = str(isodate)
 
-            app.logger.info("Data gathered, prepare to save")
+            fdate = (fcttime['year'] + 
+            '-' + fcttime['mon_padded'] +
+            '-' + fcttime['mday_padded'])
 
-    
+            fhour = (fcttime['hour_padded'] + 
+            ':' + fcttime['min'])
+
+            weather_data= {'predicted_rain': float(whour['qpf']['english']),
+            'prediction_of_perspiration': float(whour['pop']),
+            'temperature': float(whour['temp']['english']),
+            'dew_point': float(whour['dewpoint']['english']),
+            'mslp': float(whour['mslp']['english']),
+            'humidity': int(whour['humidity']),
+            'fctcode': (int(whour['fctcode'])),
+            'wind_direction_degrees': int(whour['wdir']['degrees']),
+            'wind_direction': str(whour['wdir']['dir']),
+            'wind_speed': float(whour['wspd']['english']),
+            'uv_index': int(whour['uvi']),
+            'icon_url': str(whour['icon_url']),
+            'isodate': str(fdate + 
+                    ' ' + fhour + 
+                    ':00.00000')
+            }
+
+        return pd.DataFrame(weather_data)
+
+
     def get_location_data(location):
         """Returns a datatable of 24h, hour by hour weather of one locations
             Intention is to return a pandas DataFrame of with 24 hour for one specific location.
@@ -99,14 +97,14 @@ class WReader():
         """
 
         # Get location data as json
-        location_data = self._get_location_json(location)
+        location_json = self._get_location_json(location)
         
         # Transform json data to DataFrame
-        location_dataframe = transform_location_json_to_dataframe(location_data)        
+        location_dataframe = self._transform_location_json_to_dataframe(location_json)        
     
         return location_dataframe
 
-    def get_all_location_data(locations):
+    def get_all_locations_data(locations):
         """Returns a datatable of 24h, hour by hour weather of all locations
             Intention is to return a pandas DataFrame of with 24 hour datarows per location.
             Columns in DataFrame are the variables from wunderground.
@@ -128,7 +126,7 @@ class WReader():
             location_json = get_location_json(self.api_key, location.location)
 
             # Transform location json to DataFrame
-            location_datatable = transform_location_json_to_dataframe(
+            location_datatable = self._transform_location_json_to_dataframe(
                     location_json)
 
             # Combine locations_dataframes into one dataframe
