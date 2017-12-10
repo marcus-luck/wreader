@@ -4,20 +4,20 @@ This project intend to give a simple package to receive hourly data for a given 
 ### Information
 
 The package returns a dataframe with the following columns:
-'predicted_rain'
-'prediction_of_perspiration'
-'temperature'
-'dew_point'
-'mslp'
-'humidity'
-'fctcode'
-'wind_direction_degrees'
-'wind_direction'
-'wind_speed'
-'uv_index'
-'icon_url'
-'isodate'
-'nowtime'
+* 'predicted_rain'
+* 'prediction_of_perspiration'
+* 'temperature'
+* 'dew_point'
+* 'mslp'
+* 'humidity'
+* 'fctcode'
+* 'wind_direction_degrees'
+* 'wind_direction'
+* 'wind_speed'
+* 'uv_index'
+* 'icon_url'
+* 'isodate'
+* 'nowtime'
 
 ### Using
 
