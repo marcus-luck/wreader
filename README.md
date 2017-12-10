@@ -1,10 +1,26 @@
 # wreader
 This project intend to give a simple package to receive hourly data for a given coordinate, returning a pandas DataFrame with 24h weather data from Wunderground.
 
+### Information
 
-### Installing
+The package returns a dataframe with the following columns:
+'predicted_rain'
+'prediction_of_perspiration'
+'temperature'
+'dew_point'
+'mslp'
+'humidity'
+'fctcode'
+'wind_direction_degrees'
+'wind_direction'
+'wind_speed'
+'uv_index'
+'icon_url'
+'isodate'
+'nowtime'
 
-A step by step series of examples that tell you have to get a development env running
+### Using
+
 
 Import the package
 
