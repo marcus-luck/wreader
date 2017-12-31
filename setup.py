@@ -7,7 +7,7 @@ def readme():
 
 
 setup(name='wreader',
-      version='0.2',
+      version='0.3',
       description='Wunderground weather API reader for hourly data',
       long_description=readme(),
       classifiers=[

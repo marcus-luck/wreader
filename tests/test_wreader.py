@@ -106,7 +106,7 @@ class Testwreader(TestCase):
                     'metric': '1018'},
                 'pop': '1',
                 'qpf': {'english': '0.0',
-                    'metric': '0'},
+                    'metric': '20'},
                 'sky': '67',
                 'snow': {'english': '0.0',
                     'metric': '0'},
@@ -157,10 +157,17 @@ class Testwreader(TestCase):
         self.assertEqual(df.loc[1,'wind_direction'],'ENE') 
         self.assertEqual(df.loc[1,'wind_direction_degrees'],60) 
         self.assertEqual(df.loc[1,'wind_speed'],12.0) 
-        #test json to dataframe
+        self.assertEqual(df.loc[1,'prediction_of_perspiration'],1.0) 
 
-        #test json to dataframe fails if invalid json
-
+        # Test metric values
+    
+        self.assertEqual(df.loc[0,'dew_point_metric'],19) 
+        self.assertEqual(df.loc[0,'predicted_rain_metric'],0) 
+        
+        self.assertEqual(df.loc[1,'temperature_metric'],24) 
+        self.assertEqual(df.loc[1,'wind_speed_metric'],19.0) 
+        self.assertEqual(df.loc[1,'predicted_rain_metric'],20) 
+        
 
 if __name__ == '__main__':
     unittest.main()

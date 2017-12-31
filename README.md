@@ -19,6 +19,14 @@ The package returns a dataframe with the following columns:
 * 'isodate'
 * 'nowtime'
 
+As of v 0.3 it also returns the following metric values:
+* 'predicted_rain_metric'
+* 'temperature_metric'
+* 'dew_point_metric'
+* 'mslp_metric'
+* 'wind_speed_metric'
+
+
 ### Using
 
 
