@@ -1,33 +1,57 @@
-import pandas as pd
+import sys
 from requests import get
 from datetime import datetime
 from time import sleep
 
+from logging import basicConfig, Formatter, getLogger, StreamHandler, 
+logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+rootLogger = logging.getLogger()
+
 
 class WReader():
-    def __init__(self, api_key, sleep_time = 10):
+    def __init__(self, api_key, sleep_time = 10, logger=None):
         self._api_key = api_key
         self._sleep_time = sleep_time
 
 
-    def set_sleep_time(self, sleep_time):
-        """Set sleeptime in between api calls
+    @property
+    def api_key(self):
+        return self._api_key
 
-        args:
-            param1: (int) sleep_time
-        
-        """
-        self._sleep_time = sleep_time
-
-
+    @api_key.setter
     def set_api_key(self, api_key):
-        """Set  wunderground api_key
+        """Set Darksky api_key
+        Sign up for an API key at:
+        https://darksky.net/dev
 
         args:
             param1: (str) api_key
         
         """
+
+        if type(api_key) is not str:
+            raise ValueError("api key need to be a string")
         self._api_key = api_key
+
+
+    @property
+    def sleep_time(self):
+        return self._api_key
+
+    @sleep_time.setter
+    def set_sleep_time(self, sleep_time):
+        """Set sleeptime in between api calls
+        Sleeptime is used to not flood the api if they
+        decide to enforce a max calls per minute policy.
+        Remnant from Wundergrounds API.
+
+        args:
+            param1: (int) sleep_time
+        
+        """
+        if sleep_time <= 0 or type(sleep_time) is not int:
+            raise ValueError("sleep time need to be a postive integer")
+        self._sleep_time = sleep_time
 
 
     def _get_location_json(self, location):
@@ -37,16 +61,22 @@ class WReader():
             param1: (str) location as XXXX,YYYY
 
         Returns:
-            Json
+            (dict) JSON
 
         """
         
 
         url = "http://api.wunderground.com/api/%s/hourly/q/%s.json" % (self._api_key, location)
 
-        response = get(url)
-
-        return response.json()
+        try:
+            response = get(url)
+        except ConnectionError:
+            logger.error('get_location_json failed: %s' % (e,))
+        try:
+            return response.json()
+        except ValueError, e:
+            logger.error('get_location_json failed: %s' % (e,))
+            return {}
 
 
     def _transform_location_json_to_dataframe(self, location_data):
