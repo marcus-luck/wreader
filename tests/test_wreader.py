@@ -1,14 +1,18 @@
-from unittest import TestCase
+import pytest
 
 from wreader import WReader
 
-class Testwreader(TestCase):
-    def setUp(self):
+class Testwreader():
+
+    @pytest.fixture
+    def wreader(self):
         self.init_key = 'inital_apikey'
         self.init_time = 3
-        self.wr = WReader(self.init_key, self.init_time)
+        return WReader(self.init_key, self.init_time)
 
-        self.mock_json = {'latitude': 21.2870072,
+    @pytest.fixture
+    def json_response(self):
+        mock_json = [{'latitude': 21.2870072,
                             'longitude': -157.8390944,
                             'timezone': 'Pacific/Honolulu',
                             'hourly': {'summary': 'Partly cloudy throughout the day and breezy starting tomorrow morning.',
@@ -49,44 +53,37 @@ class Testwreader(TestCase):
                                 'visibility': 10,
                                 'ozone': 254.16},
                             ]}}
+                            ]
+        return mock_json
 
-
-    def test_set_apikey(self):
+    def test_getset_attributes(self, wreader):
         
-        self.assertEqual(self.init_key, self.wr.api_key)
+        assert wreader.init_key == wreader.api_key
 
         new_key = '12345'
-        self.wr.api_key = new_key
-        self.assertEqual(new_key, self.wr.api_key) 
+        wreader.api_key = new_key
+        assert new_key == wreader.api_key 
 
-    def test_set_sleeptime(self):
         
-        self.assertEqual(self.init_time, self.wr.sleep_time)
+        assert wreader.init_time == wreader.sleep_time
 
         new_time = 12
-        self.wr.sleep_time = new_time
-        self.assertEqual(new_time, self.wr.sleep_time)
-
-
+        wreader.sleep_time = new_time
+        assert new_time, wreader.sleep_time
 
     def test_transform_location_json_to_dataframe(self):
 
         df = self.wr._parse_location_json("name", "12.3456,78.9012", self.mock_json)
     
-        self.assertEqual(df[0]['dewPoint'], 67.05) 
-        self.assertEqual(df[0]['icon'], 'partly-cloudy-night') 
-        self.assertEqual(df[0]['precipIntensity'], 0) 
-        self.assertEqual(df[0]['precipProbability'], 0) 
-        self.assertEqual(df[0]['temperature'], 75.35) 
+        self.assertEqual(df[0]['dewPoint'], 67.05)
+        self.assertEqual(df[0]['icon'], 'partly-cloudy-night')
+        self.assertEqual(df[0]['precipIntensity'], 0)
+        self.assertEqual(df[0]['precipProbability'], 0)
+        self.assertEqual(df[0]['temperature'], 75.35)
         self.assertNotEqual(df[0]['time'], 1542355200)
-        self.assertEqual(df[1]['apparentTemperature'], 76.06) 
-        self.assertEqual(df[1]['uvIndex'], 0) 
-        self.assertEqual(df[1]['pressure'], 1015.12) 
-        self.assertEqual(df[1]['windSpeed'], 9.26) 
-        self.assertEqual(df[1]['windGust'],13.41) 
-        self.assertEqual(df[1]['windBearing'], 62) 
-
-
-if __name__ == '__main__':
-    unittest.main()
-
+        self.assertEqual(df[1]['apparentTemperature'], 76.06)
+        self.assertEqual(df[1]['uvIndex'], 0)
+        self.assertEqual(df[1]['pressure'], 1015.12)
+        self.assertEqual(df[1]['windSpeed'], 9.26)
+        self.assertEqual(df[1]['windGust'],13.41)
+        self.assertEqual(df[1]['windBearing'], 62)
