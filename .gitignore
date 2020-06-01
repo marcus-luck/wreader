@@ -105,3 +105,7 @@ ENV/
 
 # vim
 *.swp
+
+# vscode
+.vscode/
+.vscode/settings.json

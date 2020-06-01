@@ -47,6 +47,15 @@ locations = {"Waikiki": "21.255220,-157.806872", "Sunset Beach": "21.255220,-157
 output = wr.get_all_locations_data(locations)
 ```
 
+### Changelog
+
+v0.5
+* API changes,
+* the get_location_data returns a list of dictionaries.
+* change test framework from nose to pytest
+
+v0.4
+replaced wunderground API with Darksky
 
 ### License
 

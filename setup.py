@@ -7,7 +7,7 @@ def readme():
 
 
 setup(name='wreader',
-      version='0.4',
+      version='0.5',
       description='Darksky weather API reader for hourly data',
       long_description=readme(),
       classifiers=[
@@ -25,7 +25,7 @@ setup(name='wreader',
       install_requires=[
           'requests>=2.12.4',
           ],
-      test_suite='nose.collector',
-      tests_require=['nose', 'nose-cover3'],
+      test_suite='pytest',
+      tests_require=['pytest'],
       include_package_data=True
       )
